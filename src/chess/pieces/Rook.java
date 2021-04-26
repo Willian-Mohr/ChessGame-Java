@@ -11,7 +11,8 @@ public class Rook extends ChessPiece {
 
 	@Override
 	public String toString() {
-		return "R";
+		String piece = this.getClass().getSimpleName();
+		return piece.substring(0, 1);
 	}
 
 }

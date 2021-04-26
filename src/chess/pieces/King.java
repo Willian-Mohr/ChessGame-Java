@@ -11,7 +11,8 @@ public class King extends ChessPiece {
 
 	@Override
 	public String toString() {
-		return "K";
+		String piece = this.getClass().getSimpleName();
+		return piece.substring(0, 1);
 	}
 
 }
