@@ -5,11 +5,16 @@ import boardgame.Piece;
 import boardgame.Position;
 import chess.pieces.*;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ChessMatch {
+
+    /*
+     * ChessMatch (Partida de xadrez) é reponsável pelad regras da partida de xadrez.
+     */
 
     private int turn;
     private Color currentPlayer;
@@ -53,11 +58,17 @@ public class ChessMatch {
         return promoted;
     }
 
+    /*
+     * Metodo responsável por trocar o turno e informar qual jogador deve jogar.
+     */
     private void nextTurn() {
         turn++;
         currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE;
     }
 
+    /*
+     * Retorna uma matriz de peças do jogo de xadrez.
+     */
     public ChessPiece[][] getPieces() {
         ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
         for (int i = 0; i < board.getRows(); i++) {
@@ -68,12 +79,18 @@ public class ChessMatch {
         return mat;
     }
 
+    /*
+     * Metodo responsável por identificar os movimentos possiveis da peça.
+     */
     public boolean[][] possibleMoves(ChessPosition sourcePosition) {
         Position position = sourcePosition.toPosition();
         validateSourcePosition(position);
         return board.piece(position).possibleMoves();
     }
 
+    /*
+     * Metodo reponsável por mover as peças da posição de origem para a de destino, podendo também retornar uma possivél peça capturada.
+     */
     public ChessPiece perfomeChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
         Position source = sourcePosition.toPosition();
         Position target = targetPosition.toPosition();
@@ -83,6 +100,7 @@ public class ChessMatch {
 
         if (testCheck(currentPlayer)) {
             undoMove(source, target, capturePiece);
+            // Você não pode se colocar em cheque.
             throw new ChessException("You can't put yourself in check");
         }
 
@@ -115,12 +133,17 @@ public class ChessMatch {
         return (ChessPiece) capturePiece;
     }
 
+    /*
+     * Metodo responsável por promover o peão para uma peça mais forte.
+     */
     public ChessPiece replacePromotedPiece(String type) {
         if (promoted == null) {
+            // Não há peça a ser promovida.
             throw new IllegalStateException("There is no piece to be promoted");
         }
         if (!type.equals("B") && !type.equals("N") && !type.equals("R") & !type.equals("Q")) {
-            return promoted;
+            // Tipo inválido para promoção.
+            throw new InvalidParameterException("Invalid type for promotion");
         }
         Position pos = promoted.getChessPosition().toPosition();
         Piece p = board.removePiece(pos);
@@ -132,6 +155,9 @@ public class ChessMatch {
         return newPiece;
     }
 
+    /*
+     * Metodo reponsável por retornar um tipo de peça.
+     */
     private ChessPiece newPiece(String type, Color color) {
         if (type.equals("B")) return new Bishop(board, color);
         if (type.equals("N")) return new Knight(board, color);
@@ -140,6 +166,9 @@ public class ChessMatch {
 
     }
 
+    /*
+     *  Metodo responsável por realizar o movimento da peça.
+     */
     private Piece makeMove(Position source, Position target) {
         ChessPiece p = (ChessPiece) board.removePiece(source);
         p.increaseMoveCount();
@@ -171,8 +200,10 @@ public class ChessMatch {
             if (source.getColumn() != target.getColumn() && capturedPiece == null) {
                 Position pawnPosition;
                 if (p.getColor() == Color.WHITE) {
+                    // down line
                     pawnPosition = new Position(target.getRow() + 1, target.getColumn());
                 } else {
+                    // up line
                     pawnPosition = new Position(target.getRow() - 1, target.getColumn());
                 }
                 capturedPiece = board.removePiece(pawnPosition);
@@ -184,6 +215,9 @@ public class ChessMatch {
         return capturedPiece;
     }
 
+    /*
+     *  Metodo responsável por desfazer movimento da peça realizar no makeMove.
+     */
     private void undoMove(Position source, Position target, Piece capturedPiece) {
         ChessPiece p = (ChessPiece) board.removePiece(target);
         p.decreaseMoveCount();
@@ -227,29 +261,45 @@ public class ChessMatch {
         }
     }
 
+    /*
+     * Metodo responsável por validar a posição de origem.
+     */
     private void validateSourcePosition(Position position) {
         if (!board.thereIsAPiece(position)) {
+            // Não há peça na posição de origem.
             throw new ChessException("There is no piece on source position");
         }
         if (currentPlayer != ((ChessPiece) board.piece(position)).getColor()) {
+            // A peça escolhida não é sua.
             throw new ChessException("The chosen piece is not yours");
         }
         if (!board.piece(position).isThereAnyPossibleMove()) {
+            // Não há movimentos possíveis para a peça escolhida.
             throw new ChessException("There is no possible moves for the chosen piece");
         }
     }
 
+    /*
+     * Metodo responsável por validar a posição de destino.
+     */
     private void validateTargetPosition(Position source, Position target) {
         if (!board.piece(source).possibleMove(target)) {
+            // A peça escolhida não pode se mover para a posição de destino
             throw new ChessException("The chosen piece can't move to target position");
         }
     }
 
+    /*
+     * Metodo auxiliar para receber as coordenadas do xadrez, chamar o metodo de conversão de posição de xadrez para posição comum e adicionar a peça ao tabuleiro.
+     */
     private void placeNewPiece(char column, int row, ChessPiece piece) {
         board.placePiece(piece, new ChessPosition(column, row).toPosition());
         piecesOnTheBoard.add(piece);
     }
 
+    /*
+     * Metodo reposável por iniciar a partida de xadrez e colocar as peças no tabuleiro.
+     */
     private void initialSetup() {
         placeNewPiece('a', 1, new Rook(board, Color.WHITE));
         placeNewPiece('b', 1, new Knight(board, Color.WHITE));
@@ -286,36 +336,45 @@ public class ChessMatch {
         placeNewPiece('h', 7, new Pawn(board, Color.BLACK, this));
     }
 
+    /*
+     * Metodo reponsável por informar quem é seu oponente.
+     */
     private Color opponent(Color color) {
         return (color == Color.WHITE) ? Color.BLACK : Color.WHITE;
     }
 
-    private ChessPiece king(Color color) throws IllegalAccessException {
+    /*
+     * Metodo responsável por retornar o Rei da cor informada.
+     */
+    private ChessPiece king(Color color) {
         List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece) x).getColor() == color).collect(Collectors.toList());
         for (Piece p : list) {
             if (p instanceof King) {
                 return (ChessPiece) p;
             }
         }
-        throw new IllegalAccessException("There is no " + color + "king on the board");
+        // Não há rei branco/preto no tabuleiro.
+        throw new IllegalStateException("There is no " + color + "king on the board");
     }
 
+    /*
+     * Metodo reponsável por testar o check no Rei com base na cor informada.
+     */
     private boolean testCheck(Color color) {
-        try {
-            Position kingPosition = king(color).getChessPosition().toPosition();
-            List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPiece) x).getColor() == opponent(color)).collect(Collectors.toList());
-            for (Piece p : opponentPieces) {
-                boolean[][] mat = p.possibleMoves();
-                if (mat[kingPosition.getRow()][kingPosition.getColumn()]) {
-                    return true;
-                }
+        Position kingPosition = king(color).getChessPosition().toPosition();
+        List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPiece) x).getColor() == opponent(color)).collect(Collectors.toList());
+        for (Piece p : opponentPieces) {
+            boolean[][] mat = p.possibleMoves();
+            if (mat[kingPosition.getRow()][kingPosition.getColumn()]) {
+                return true;
             }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
         }
         return false;
     }
 
+    /*
+     * Metodo responsável por verificar o possivel checkmate.
+     */
     public boolean testCheckMate(Color color) {
         if (!testCheck(color)) {
             return false;

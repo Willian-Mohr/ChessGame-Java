@@ -2,6 +2,10 @@ package boardgame;
 
 public class Position {
 
+    /*
+     * Classe da camada de tabuleiro (boardgame) que representa as posições no tabuleiro.
+     */
+
     private int row;
     private int column;
 
@@ -26,14 +30,14 @@ public class Position {
         this.column = column;
     }
 
-    @Override
-    public String toString() {
-        return row + ", " + column;
-    }
-
     public void setValues(int row, int column) {
         this.row = row;
         this.column = column;
+    }
+
+    @Override
+    public String toString() {
+        return row + ", " + column;
     }
 
 }

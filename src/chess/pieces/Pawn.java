@@ -32,13 +32,15 @@ public class Pawn extends ChessPiece {
         Position p = new Position(0, 0);
 
         if (getColor() == Color.WHITE) {
+            // Up
             p.setValues(position.getRow() - 1, position.getColumn());
             if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p)) {
                 mat[p.getRow()][p.getColumn()] = true;
             }
+            // Up x2
             p.setValues(position.getRow() - 2, position.getColumn());
             Position p2 = new Position(position.getRow() - 1, position.getColumn());
-            if (getBoard().positionExists(p) && canMove(p) && getMoveCount() == 0 && getBoard().positionExists(p2) && canMove(p2)) {
+            if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p) && getMoveCount() == 0 && getBoard().positionExists(p2) && !getBoard().thereIsAPiece(p2)) {
                 mat[p.getRow()][p.getColumn()] = true;
             }
             // Northwest
@@ -64,13 +66,15 @@ public class Pawn extends ChessPiece {
 
             }
         } else {
+            // Up
             p.setValues(position.getRow() + 1, position.getColumn());
             if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p)) {
                 mat[p.getRow()][p.getColumn()] = true;
             }
+            // Up x2
             p.setValues(position.getRow() + 2, position.getColumn());
             Position p2 = new Position(position.getRow() + 1, position.getColumn());
-            if (getBoard().positionExists(p) && canMove(p) && getMoveCount() == 0 && getBoard().positionExists(p2) && canMove(p2)) {
+            if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p) && getMoveCount() == 0 && getBoard().positionExists(p2) && !getBoard().thereIsAPiece(p2)) {
                 mat[p.getRow()][p.getColumn()] = true;
             }
             // Northwest

@@ -20,11 +20,17 @@ public class King extends ChessPiece {
         return piece.substring(0, 1);
     }
 
+    /*
+     * Metodo auxiliar que verifica se o Rei pode mover para um determinada posição.
+     */
     private boolean canMove(Position position) {
         ChessPiece p = (ChessPiece) getBoard().piece(position);
         return p == null || p.getColor() != getColor();
     }
 
+    /*
+     * Metodo reponsável por verificar se a Torre está disponivel para o roque.
+     */
     private boolean testRookCastling(Position position) {
         ChessPiece p = (ChessPiece) getBoard().piece(position);
         return p != null && p instanceof Rook && p.getColor() == getColor() && getMoveCount() == 0;
@@ -85,8 +91,8 @@ public class King extends ChessPiece {
         // #Specialmove castling
         if (getMoveCount() == 0 && !chessMatch.getCheck()) {
             // #Specialmove castling kingside rook
-            Position posT1 = new Position(position.getRow(), position.getColumn() + 3);
-            if (testRookCastling(posT1)) {
+            Position posRook1 = new Position(position.getRow(), position.getColumn() + 3);
+            if (testRookCastling(posRook1)) {
                 Position p1 = new Position(position.getRow(), position.getColumn() + 1);
                 Position p2 = new Position(position.getRow(), position.getColumn() + 2);
                 if (getBoard().piece(p1) == null & getBoard().piece(p2) == null) {
@@ -94,8 +100,8 @@ public class King extends ChessPiece {
                 }
             }
             // #Specialmove castling queenside rook
-            Position posT2 = new Position(position.getRow(), position.getColumn() - 4);
-            if (testRookCastling(posT2)) {
+            Position posRook2 = new Position(position.getRow(), position.getColumn() - 4);
+            if (testRookCastling(posRook2)) {
                 Position p1 = new Position(position.getRow(), position.getColumn() - 1);
                 Position p2 = new Position(position.getRow(), position.getColumn() - 2);
                 Position p3 = new Position(position.getRow(), position.getColumn() - 3);
