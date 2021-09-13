@@ -14,13 +14,35 @@ public class Program {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
+
         ChessMatch chessMatch = new ChessMatch();
+
+        ChessMatch chessMatch1 = new ChessMatch();
+
+        int contador = 1;
+
         List<ChessPiece> captured = new ArrayList<>();
 
         while (!chessMatch.getCheckMate()) {
             try {
                 UI.clearScreen();
                 UI.printMatch(chessMatch, captured);
+
+                if (contador > 1){
+
+                    System.out.println("----------- Vai imprimir um tabuleiro com uma nova instancia ---------");
+                    System.out.println();
+
+                    UI.printMatch(chessMatch1, captured);
+
+                    System.out.println("--------------------------------------------------");
+                    System.out.println();
+
+
+                }
+
+                contador++;
+
                 System.out.println();
                 System.out.print("Source: ");
                 ChessPosition source = UI.readChessPosition(sc);
