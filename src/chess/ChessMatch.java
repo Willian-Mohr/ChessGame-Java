@@ -27,11 +27,23 @@ public class ChessMatch {
     private List<ChessPiece> piecesOnTheBoard = new ArrayList<>();
     private List<ChessPiece> capturedPieces = new ArrayList<>();
 
-    public ChessMatch() {
+
+    private static ChessMatch instance = null;
+
+    private ChessMatch() {
         board = new Board(8, 8);
         turn = 1;
         currentPlayer = Color.WHITE;
         initialSetup();
+    }
+
+    public static ChessMatch getInstance(){
+
+        if ( instance == null){
+            return instance = new ChessMatch();
+        } else {
+            return instance;
+        }
     }
 
     public int getTurn() {

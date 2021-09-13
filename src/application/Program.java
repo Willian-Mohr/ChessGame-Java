@@ -14,13 +14,37 @@ public class Program {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        ChessMatch chessMatch = new ChessMatch();
+        //ChessMatch chessMatch = new ChessMatch();
+
+        ChessMatch chessMatch = ChessMatch.getInstance();
+
+        ChessMatch chessMatch1 = ChessMatch.getInstance();
+
+        int contador = 1;
+
         List<ChessPiece> captured = new ArrayList<>();
 
         while (!chessMatch.getCheckMate()) {
             try {
                 UI.clearScreen();
                 UI.printMatch(chessMatch, captured);
+
+
+                if(contador > 1){
+
+                    System.out.println();
+                    System.out.println("---------- Irá pegar a instancia de partida de xadrez --------");
+
+                    UI.printMatch(chessMatch1, captured);
+
+                    System.out.println("--------------------------------------------------------------");
+                    System.out.println();
+
+                }
+
+                contador++;
+
+
                 System.out.println();
                 System.out.print("Source: ");
                 ChessPosition source = UI.readChessPosition(sc);
